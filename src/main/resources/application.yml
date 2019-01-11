@@ -1,0 +1,8 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/story-board-db?useSSL=false&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: mysql
+    password: mysql
