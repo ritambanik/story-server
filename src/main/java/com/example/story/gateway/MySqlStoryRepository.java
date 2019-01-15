@@ -3,6 +3,7 @@ package com.example.story.gateway;
 import com.example.story.data.Story;
 import com.example.story.data.StoryForm;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -45,7 +46,11 @@ public class MySqlStoryRepository implements StoryRepository {
 
     @Override
     public Optional<Story> fetchStory(Integer id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT id, projectId, name, info FROM story WHERE id = " + id, rowMapper));
+        try{
+            return Optional.of(jdbcTemplate.queryForObject("SELECT id, projectId, name, info FROM story WHERE id = " + id, rowMapper));
+        } catch (EmptyResultDataAccessException ex) {
+            return Optional.empty();
+        }
     }
 
     @Override

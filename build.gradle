@@ -1,6 +1,7 @@
 buildscript {
 	ext {
 		springBootVersion = '2.1.1.RELEASE'
+		springCloudVersion = 'Finchley.SR2'
 		mysqlVersion = "8.0.13"
 	}
 	repositories {
@@ -28,6 +29,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation "mysql:mysql-connector-java:${mysqlVersion}"
+	implementation "org.slf4j:slf4j-api:1.7.10"
+	implementation "org.springframework.cloud:spring-cloud-starter-netflix-hystrix"
+	implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
+	implementation "org.springframework.data:spring-data-redis"
+	implementation "org.apache.commons:commons-pool2"
+	implementation "redis.clients:jedis"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }

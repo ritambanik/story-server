@@ -1,8 +1,12 @@
 package com.example.story;
 
+import com.example.story.data.Project;
+import com.example.story.data.ProjectStatus;
 import com.example.story.data.Story;
 import com.example.story.data.StoryForm;
 import com.example.story.gateway.StoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +18,26 @@ import java.util.Optional;
 @RestController("/stories")
 public class StoryController {
 
+    private final Logger log = LoggerFactory.getLogger(StoryController.class);
+
+    @Autowired
+    private ProjectClient projectClient;
+
     @Autowired
     private StoryRepository repo;
 
     @PostMapping
     public ResponseEntity<Story> createStory(@RequestBody StoryForm storyForm) {
-        Story story = repo.createStory(storyForm);
-        return new ResponseEntity<>(story, HttpStatus.CREATED);
+        ProjectStatus projectStatus = projectClient.checkProject(storyForm.getProjectId());
+        if (ProjectStatus.ACTIVE.equals(projectStatus)) {
+            Story story = repo.createStory(storyForm);
+            return new ResponseEntity<>(story, HttpStatus.CREATED);
+        } else if (ProjectStatus.INACTIVE.equals(projectStatus)) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("/stories/{id}")
@@ -29,6 +46,7 @@ public class StoryController {
         if (story.isPresent()) {
             return new ResponseEntity<>(story.get(), HttpStatus.FOUND);
         }
+        log.debug("No story present with id {}", id);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

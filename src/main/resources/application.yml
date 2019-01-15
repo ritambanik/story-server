@@ -6,3 +6,21 @@ spring:
     url: jdbc:mysql://localhost:3306/story-board-db?useSSL=false&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false
     username: mysql
     password: mysql
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org.springframework.boot: ERROR
+    com.example.story: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file: /home/ritam/workspace/story-server/story-server.log
+
+project-server:
+  ribbon:
+    eureka:
+      enabled: false
+    listOfServers: localhost:8082
+    ServerListRefreshInterval: 15000
